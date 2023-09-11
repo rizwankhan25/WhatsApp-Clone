@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <div class="textatea">
+    <textarea style="resize: none;"></textarea>
+    <button>send</button>
+    <span><span class="users"></span> users connected</span>
+  </div>
+  
+  <div id="overlay">
+   <div class="input">
+     <input type="text" placeholder="username">
+     <button id="setname">set user</button>
+   </div>
+  </div>
+
+ <div class="msgs">
+
+
+ </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js" integrity="sha512-Z6C1p1NIexPj5MsVUunW4pg7uMX6/TT3CUVldmjXx2kpip1eZcrAnxIusDxyFIikyM9A61zOVNgvLr/TGudOQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    let socket = io()
+
+    // socket.emit("msg", "this is triel")
+
+    let textarea = document.querySelector("textarea")
+    let button = document.querySelector("button")
+    button.addEventListener("click", function(data){
+  let val = textarea.value;
+   if(val.trim() !== "" ) {
+     socket.emit("msg", {text:textarea.value,nameval})
+     textarea.value= "";    
+       } else {
+        alert("⚠️write a message");
+       }
+    })
+
+    socket.on("msg", (data) => {
+      let clutter = `<div class="smg">${data.nameval} : ${data.text}</div>`
+      clutter+=
+      document.querySelector(".msgs").innerHTML += clutter; 
+    })
+    socket.on("onlineusers", function(user) {
+      document.querySelector(".users").textContent = user.allusersnames
+    })
+    // deep clone code object in js
+    var nameval;
+     document.querySelector("#setname").addEventListener("click", function(){
+      nameval = document.querySelector("input").value;
+      socket.emit("naam", nameval)
+      document.querySelector("#overlay").style.display = "none"
+     })
+    
+
+      // socket.on("onlineusers", function(data) {
+      //   document.querySelector(".users").textContent = data
+      // })
+
+      // let nameval;
+      // document.querySelector("#setname").addEventListener("click", function(){
+      //   nameval= document.querySelector("input").value;
+      //   socket.emit("naam", nameval)
+      //   document.querySelector("#overlay").style.display = "none"
+      // })
+
+  </script>
+</body>
+</html>
